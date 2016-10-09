@@ -371,6 +371,14 @@
                             </span>
                         </button>
                     </div>
+                    <div class="toolbarstyle ui-buttonset ">
+                        <button class="fw-button fw-light fw-large fw-square"  id="StyleUploadButton" title="{% trans "upload style" %}">
+                            <span class="ui-button-text">
+                                <i>CSS</i>
+                            </span>
+                        </button>
+                    </div>
+
  		    <div id="tableEdit" class="toolbartable ui-buttonset "style ="display:none">
                         <span class="multibuttonsCover fw-button fw-light fw-large fw-square edit-button" 
 		title="{% trans "table editing." %}" id="block-style-label">{% trans "T" %}</span>
@@ -410,6 +418,12 @@
                                     <span class="ui-button-text" title="{% trans "remove current row." %}">
                                         <input type="radio" >
                                         <label class="fw-pulldown-item" id="row_remove">{% trans "remove row" %}</label>
+                                    </span>
+                                </li>
+<li class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false">
+                                    <span class="ui-button-text" title="{% trans "Table Style" %}">
+                                        <input type="radio" >
+                                        <label class="fw-pulldown-item" id="table_style">{% trans "Table Style" %}</label>
                                     </span>
                                 </li>
                            </ul>

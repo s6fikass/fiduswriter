@@ -1,5 +1,5 @@
 import {loadCSS} from "fg-loadcss/src/loadCSS"
-
+import {documentStyleList} from "../../style/documentstyle-list"
 
 /* Functions related to taking document data from this.mod.editor.doc.* and displaying
  * it (ie making it part of the DOM structure).
@@ -31,10 +31,27 @@ export class ModSettingsLayout {
         // Remove previous style.
         documentStyleLink.parentElement.removeChild(documentStyleLink.previousElementSibling)
 
+        let defaultStyle=false
+        for (let i = 0; i < documentStyleList.length; i++) {
+            if(this.mod.editor.doc.settings.documentstyle == documentStyleList[i].filename){
+                defaultStyle=true
+                break
+            }
+        }
+        if(defaultStyle){
         stylesheet = loadCSS(
             staticUrl + 'css/document/' + this.mod.editor.doc.settings.documentstyle + '.css',
             documentStyleLink
         )
+        }else{
+            stylesheet = loadCSS(
+                '../../media/styles/'+ this.mod.editor.doc.settings.documentstyle + '.css',
+            documentStyleLink
+        )
+
+        }
+
+
         stylesheet.addEventListener( "load", function() {
             // We layout the comments 250 ms after the stylesheet has been loaded.
             // This should usually be enough to make the layout work correctly.

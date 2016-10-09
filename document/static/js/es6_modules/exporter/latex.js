@@ -201,6 +201,7 @@ export class BaseLatexExporter extends BaseExporter {
         htmlCode.innerHTML = htmlCode.innerHTML.replace(
             /(\r\n|\n|\r)/gm,
             '')
+            
 
         // Escape characters that are protected in some way.
         this.replaceText(htmlCode, '\\\\', '\\textbackslash')

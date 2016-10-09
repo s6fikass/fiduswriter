@@ -18,6 +18,7 @@ import {ModServerCommunications} from "./server-communications"
 import {editorToModel, modelToEditor} from "./node-convert"
 import {BibliographyDB} from "../bibliography/database"
 import {ImageDB} from "../images/database"
+import {StyleDB} from "../Styles/database"
 import {Paste} from "./paste/paste"
 
 
@@ -215,6 +216,20 @@ export class Editor {
             callback()
         }
     }
+    getStyleDB(userId, callback) {
+        let that = this
+        if (!this.styleDB) {
+            let styleGetter = new StyleDB(userId)
+            styleGetter.getDB(function(){
+                that.styleDB = styleGetter
+                that.schema.cached.styleDB = styleGetter // assign style DB to be used in schema.
+                that.mod.footnotes.schema.cached.styleDB = styleGetter // assign style DB to be used in footnote schema.
+                callback()
+            })
+        } else {
+            callback()
+        }
+    }
 
     enableUI() {
 
@@ -268,6 +283,15 @@ export class Editor {
         } else {
             this.user = this.doc.owner
         }
+        this.styleDB=new StyleDB(this.doc.owner.id)
+        let documentStyleMenu = document.getElementById("documentstyle-list")
+        this.styleDB.getDB(documentStyleMenu)
+        //this.getStyleDB(this.doc.owner.id, function(){
+        //    that.update()
+        //    that.mod.serverCommunications.send({
+        //        type: 'participant_update'
+        //    })
+        //})
         this.getImageDB(this.doc.owner.id, function(){
             that.update()
             that.mod.serverCommunications.send({

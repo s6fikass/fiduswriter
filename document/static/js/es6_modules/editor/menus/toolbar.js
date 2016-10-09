@@ -6,6 +6,8 @@ import {MathDialog} from "./content-dialogs/math"
 //import  {wrapIn, setBlockType, chainCommands, newlineInCode, toggleMark} from "prosemirror/dist/commands"
 import  {commands} from "prosemirror/dist/edit/commands"
 import {addColumnAfter,addColumnBefore, removeColumn,addRowBefore, addRowAfter, removeRow} from "prosemirror/dist/schema-table"
+var _documentstyleList = require("../../style/documentstyle-list");
+import {StyleUploadDialog} from "../../Styles/upload-dialog/upload-dialog"
 
 /* Bindings for the toolbar menu */
 export class ModMenusToolbar {
@@ -22,7 +24,14 @@ export class ModMenusToolbar {
             editFunction()
         }
     }
-
+  getStyleSheet(unique_title) {
+  for(var i=0; i<document.styleSheets.length; i++) {
+    var sheet = document.styleSheets[i];
+    if(sheet.title == unique_title) {
+      return sheet;
+    }
+  }
+}
     bindEvents() {
         let that = this
 
@@ -175,5 +184,26 @@ export class ModMenusToolbar {
                 removeRow(that.mod.editor.currentPm,true)
             })
         })
+    jQuery(document).on('mousedown', '#table_style', function(event) {
+            that.executeAction(event, function(){
+                let style='{filename: "elephant2", title: "Comfy Elephant2"},'
+                let xstyle=_documentstyleList.documentStyleList[0]
+                xstyle.filename="elephant2"
+                xstyle.title="Comfy Elephant2"
+                let x=that
+                _documentstyleList.documentStyleList.push(xstyle)
+                console.log(_documentstyleList.documentStyleList)
+                let documentStyleMenu= document.getElementById("documentstyle-list")
+                let newMenuItem = document.createElement("li")
+                newMenuItem.innerHTML = "<span class='fw-pulldown-item style' data-style='" + xstyle.filename + "' title='" + xstyle.title + "'>" + xstyle.title + "</span>"
+                documentStyleMenu.appendChild(newMenuItem)
+
+            })
+        })
+    jQuery('#StyleUploadButton').bind('click', function() {
+            new StyleUploadDialog(that.mod.editor.styleDB, false, that.ownerId, function(styleId) {
+            })
+        })
     }
+
 }

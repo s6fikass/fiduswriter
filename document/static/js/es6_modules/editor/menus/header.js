@@ -3,6 +3,7 @@ import {documentStyleList} from "../../style/documentstyle-list"
 import {citationDefinitions} from "../../style/citation-definitions"
 import {addDropdownBox} from "../../common/common"
 
+
 /* Bindings for the header menu */
 export class ModMenusHeader {
     constructor(mod) {
@@ -21,7 +22,10 @@ export class ModMenusHeader {
               addDropdownBox(jQuery(this), jQuery(this).siblings(
                   '.fw-pulldown'))
           })
-
+          let newMenuItem = document.createElement("li")
+              newMenuItem.innerHTML =
+                "<span class='fw-pulldown-item style' id='StyleUploadButton' title='Upload CSS'>Upload StyleSheet</span>"
+              documentStyleMenu.appendChild(newMenuItem)
           for (let i = 0; i < documentStyleList.length; i++) {
               let newMenuItem = document.createElement("li")
               newMenuItem.innerHTML =
@@ -32,6 +36,7 @@ export class ModMenusHeader {
 
               documentStyleMenu.appendChild(newMenuItem)
           }
+
           for (let j in citationDefinitions.styles) {
               let newMenuItem = document.createElement("li")
               newMenuItem.innerHTML =

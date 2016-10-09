@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 
 ALLOWED_FILETYPES = ['image/jpeg', 'image/png', 'image/svg+xml']
+ALLOWED_CSSFILETYPES = ['style/css']
 ALLOWED_EXTENSIONS = ['jpeg', 'jpg', 'png', 'svg']
 
 
@@ -175,3 +176,27 @@ class ImageCategory(models.Model):
 
     class Meta:
         verbose_name_plural = 'Image categories'
+#  Styles
+ALLOWED_CSSEXTENSIONS = ['css']
+
+
+def get_cssfile_path(instance, filename):
+    ext = filename.split('.')[-1].lower()
+    if ext not in ALLOWED_CSSEXTENSIONS:
+        raise IntegrityError
+    #filename = "%s.%s" % (uuid.uuid4(), ext)
+    print os.path.join('styles', filename)
+    return os.path.join('styles', filename)
+
+
+class Style(models.Model):
+    title = models.CharField(max_length=128)
+    uploader = models.ForeignKey(User, related_name='style_uploader')
+    owner = models.ForeignKey(
+        User,
+        related_name='style_owner',
+        blank=True,
+        null=True)
+    added = models.DateTimeField(auto_now_add=True)
+    style = models.FileField(upload_to=get_cssfile_path)
+    file_type = models.CharField(max_length=20, blank=True, null=True)

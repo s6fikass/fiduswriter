@@ -8,9 +8,9 @@ from django.core.serializers.python import Serializer
 from django.utils.translation import ugettext as _
 
 from document.models import AccessRight
-from usermedia.models import Image, ImageCategory
+from usermedia.models import Image, ImageCategory,Style
 
-from .models import ALLOWED_FILETYPES
+from .models import ALLOWED_FILETYPES,ALLOWED_CSSFILETYPES
 
 
 class SimpleSerializer(Serializer):
@@ -215,6 +215,96 @@ def delete_category_js(request):
             ImageCategory.objects.get(pk=int(id)).delete()
         status = 201
 
+    return JsonResponse(
+        response,
+        status=status
+    )
+
+#   Save a Style
+@login_required
+def save_css(request):
+    response = {}
+    response['errormsg'] = {}
+    status = 403
+    if request.is_ajax() and request.method == 'POST':
+        the_id = int(request.POST['id'])
+        if 'owner_id' in request.POST:
+            owner_id = int(request.POST['owner_id'])
+            if owner_id != request.user.id:
+                if not check_access_rights(owner_id, request.user):
+                    return False
+        else:
+            owner_id = request.user.id
+        if 'css' in request.FILES and \
+                request.FILES['css'].content_type not in ALLOWED_CSSFILETYPES:
+            status = 200  # Not implemented
+            response['errormsg']['error'] = _('Filetype not supported')
+        else:
+            # We only allow owners to change their images.
+            style = Style.objects.filter(pk=the_id, owner=request.user)
+            print request.FILES
+            if style.exists():
+                style = style[0]
+                status = 200
+            else:
+                style = Style()
+                style.uploader = request.user
+                style.owner_id = owner_id
+                status = 201
+            style.title = request.POST['title']
+            if 'style' in request.FILES:
+                style.style = request.FILES['style']
+            if status == 201 and 'style' not in request.FILES:
+                status = 200
+                response['errormsg']['error'] = _('No file uploaded')
+            else:
+                style.save()
+                response['values'] = {
+                    'pk': style.pk,
+                    'title': style.title,
+                    'style': style.style.url,
+                    'file_type': style.file_type,
+                    'added': mktime(style.added.timetuple()) * 1000
+
+                }
+
+    return JsonResponse(
+        response,
+        status=status
+    )
+# returns list of Styles
+@login_required
+def styles_js(request):
+    response = {}
+    status = 403
+    if request.is_ajax() and request.method == 'POST':
+        user_id = request.POST['owner_id']
+        if len(user_id.split(',')) > 1:
+            user_ids = user_id.split(',')
+            status = 200
+            for user_id in user_ids:
+                if check_access_rights(user_id, request.user) is False:
+                    status = 403
+            if status == 200:
+                styles = Style.objects.filter(owner__in=user_ids)
+        else:
+            if check_access_rights(user_id, request.user):
+                if int(user_id) == 0:
+                    user_id = request.user.id
+                styles = Style.objects.filter(owner=user_id)
+                status = 200
+        if status == 200:
+            response['styles'] = []
+            for style in styles:
+                if style.style:
+                    field_obj = {
+                        'pk': style.pk,
+                        'title': style.title,
+                        'style': style.style.url,
+                        'file_type': style.file_type,
+                        'added': mktime(style.added.timetuple()) * 1000,
+                    }
+                    response['styles'].append(field_obj)
     return JsonResponse(
         response,
         status=status
