@@ -22,16 +22,16 @@ export class ModMenusHeader {
                   '.fw-pulldown'))
           })
 
-          for (let i = 0; i < documentStyleList.length; i++) {
-              let newMenuItem = document.createElement("li")
-              newMenuItem.innerHTML =
-                "<span class='fw-pulldown-item style' data-style='" +
-                documentStyleList[i].filename + "' title='" +
-                documentStyleList[i].title + "'>" +
-                documentStyleList[i].title + "</span>"
-
-              documentStyleMenu.appendChild(newMenuItem)
-          }
+          // for (let i = 0; i < documentStyleList.length; i++) {
+          //     let newMenuItem = document.createElement("li")
+          //     newMenuItem.innerHTML =
+          //       "<span class='fw-pulldown-item style' data-style='" +
+          //       documentStyleList[i].filename + "' title='" +
+          //       documentStyleList[i].title + "'>" +
+          //       documentStyleList[i].title + "</span>"
+          //
+          //     documentStyleMenu.appendChild(newMenuItem)
+          // }
           for (let j in citationDefinitions.styles) {
               let newMenuItem = document.createElement("li")
               newMenuItem.innerHTML =

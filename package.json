@@ -43,7 +43,8 @@
     "napa": "2.3.0"
   },
   "napa": {
-    "citeproc": "Juris-M/citeproc-js#1.1.136"
+    "citeproc": "Juris-M/citeproc-js#1.1.136",
+    "texlive" : "manuels/texlive.js#master"  
   },
   "browserify": {
     "transform": [

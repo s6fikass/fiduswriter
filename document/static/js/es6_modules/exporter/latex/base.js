@@ -11,7 +11,7 @@ export class BaseLatexExporter extends BaseDOMExporter {
 
         let latexAfterAbstract = ''
 
-        let includePackages = '\\usepackage[utf8]{luainputenc}'
+        let includePackages ='' //'\\usepackage[utf8]{luainputenc}'
 
         if (subtitle && metadata.subtitle) {
             let tempNode = obj2Node(metadata.subtitle)
@@ -44,9 +44,9 @@ export class BaseLatexExporter extends BaseDOMExporter {
             includePackages += '\n\\usepackage{hyperref}'
         }
         if (jQuery(htmlCode).find('.citation').length > 0) {
-            includePackages +=
-                '\n\\usepackage[backend=biber,hyperref=false,citestyle=authoryear,bibstyle=authoryear]{biblatex}\n\\bibliography{bibliography}'
-            documentEndCommands += '\n\n\\printbibliography'
+           // includePackages +=
+             //   '\n\\usepackage[backend=biber,hyperref=false,citestyle=authoryear,bibstyle=authoryear]{biblatex}\n\\bibliography{bibliography}'
+           // documentEndCommands += '\n\n\\printbibliography'
         }
         let figures = [].slice.call(jQuery(htmlCode).find('figure'))
         if (figures.length > 0) {
@@ -145,7 +145,7 @@ export class BaseLatexExporter extends BaseDOMExporter {
     }
 
     htmlToLatex(title, author, htmlCode,
-        settings, metadata, isChapter, listedWorksList) {
+        settings, metadata, isChapter, listedWorksList, documentClass = 'article') {
         let latexStart = '',
             latexEnd = '', latexAfterAbstract = '', that = this
         if (!listedWorksList) {
@@ -165,7 +165,7 @@ export class BaseLatexExporter extends BaseDOMExporter {
         } else {
             let documentFeatures = this.findLatexDocumentFeatures(
                 htmlCode, title, author, settings['metadata-subtitle'], settings['metadata-keywords'], settings['metadata-authors'], metadata,
-                'article')
+                documentClass)
             latexStart += documentFeatures.latexStart
             latexEnd += documentFeatures.latexEnd
             latexAfterAbstract += documentFeatures.latexAfterAbstract
@@ -334,7 +334,7 @@ export class BaseLatexExporter extends BaseDOMExporter {
                 } else {
                     latexPackage = 'scaledgraphics'
                 }
-                innerFigure += '\\' + latexPackage + '{' + filename + '}\n'
+                innerFigure += '\\' + latexPackage + '{/images/' + filename + '}\n'
             } else {
                 let formula = jQuery(this).attr('data-equation')
                 innerFigure += '\\begin{displaymath}\n'+formula+'\n\\end{displaymath}\n'

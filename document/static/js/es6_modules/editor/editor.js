@@ -15,6 +15,7 @@ import {ModServerCommunications} from "./server-communications"
 import {editorToModel, modelToEditor, updateDoc, setDocDefaults} from "../schema/convert"
 import {BibliographyDB} from "../bibliography/database"
 import {ImageDB} from "../images/database"
+import {StyleDB} from "../style/database"
 import {Paste} from "./paste/paste"
 import {defaultDocumentStyle} from "../style/documentstyle-list"
 import {defaultCitationStyle} from "../style/citation-definitions"
@@ -250,6 +251,31 @@ export class Editor {
         }
     }
 
+    getStyleDB(userId, callback) {
+        let that = this
+        if (!this.styleDB) {
+            let styleGetter = new StyleDB(userId)
+            styleGetter.getDB(function(pks){
+                that.styleDB = styleGetter
+                that.schema.cached.styleDB = styleGetter // assign style DB to be used in schema.
+                that.mod.footnotes.schema.cached.styleDB = styleGetter // assign style DB to be used in footnote schema.
+                
+                let documentStyleMenu = document.getElementById("documentstyle-list")
+                for (let i = 0; i < pks.length; i++) {
+                    let newMenuItem = document.createElement("li")
+                    newMenuItem.innerHTML = "<span class='fw-pulldown-item style' data-style='style_"+ pks[i]+"' title='" +
+                        that.styleDB.db[pks[i]].title + "'>" +
+                        that.styleDB.db[pks[i]].title + "</span>"
+                    documentStyleMenu.appendChild(newMenuItem)
+                }
+
+                callback()
+            })
+        } else {
+            callback()
+        }
+    }
+
     enableUI() {
 
         jQuery('.savecopy, .saverevision, .download, .template-export, .latex, .epub, .html, .print, .style, \
@@ -308,6 +334,14 @@ export class Editor {
                 type: 'participant_update'
             })
         })
+        this.getStyleDB(this.doc.owner.id, function(){
+           that.update()
+           that.mod.serverCommunications.send({
+               type: 'participant_update'
+           })
+
+        })
+
     }
 
     updateData(doc, docInfo) {

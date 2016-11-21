@@ -98,6 +98,9 @@
         {% compress js %}
             <!-- citeproc -->
             <script type="text/javascript" src="{{ CITEPROC_URL }}"></script>
+            <!-- texlive & Promise -->
+            <script type="text/javascript" src="{{ TEXLIVE_URL }}"></script>
+            <script type="text/javascript" src="{{ PROMISE_URL }}"></script>
             <!-- Editor  -->
             <script type="text/javascript" src="{{ STATIC_URL }}js/editor.es5.js"></script>
         {% endcompress %}
@@ -372,6 +375,7 @@
                         </button>
                     </div>
                     {% if EXPERIMENTAL %}
+ 		{% endif %}
                         <div class="toolbartable ui-buttonset">
                             <div id="button-table" class="toolbartable ui-buttonset">
                                 <span class="multibuttonsCover fw-button fw-light fw-large fw-square edit-button" title="{% trans "table" %}" id="block-style-label">
@@ -385,7 +389,7 @@
                                 </div>
                             </div>
                         </div>
-                    {% endif %}
+                   
                     <div class="toolbarundoredo ui-buttonset">
                         <button class="fw-button fw-light fw-large fw-square disabled"  id="button-undo" title="{% trans "Undo" %}">
                             <span class="ui-button-text">
