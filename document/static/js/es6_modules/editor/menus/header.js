@@ -62,7 +62,10 @@ export class ModMenusHeader {
               that.mod.actions.downloadTemplateExport(templateUrl, fileType)
           })
           jQuery(document).on('mousedown', '.latex:not(.disabled)', function() {
-              that.mod.actions.downloadLatex()
+              that.mod.actions.downloadLatex(false)
+          })
+          jQuery(document).on('mousedown', '.compiled_latex:not(.disabled)', function() {
+              that.mod.actions.downloadLatex(true)
           })
           jQuery(document).on('mousedown', '.epub:not(.disabled)', function() {
               that.mod.actions.downloadEpub()

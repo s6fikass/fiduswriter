@@ -68,10 +68,10 @@ export class ModMenusActions {
         })
     }
 
-    downloadLatex() {
+    downloadLatex(compiled) {
         let that = this
         that.mod.editor.save(function() {
-            new LatexExporter(that.mod.editor.doc, that.mod.editor.bibDB, that.mod.editor.currentStyle)
+            new LatexExporter(that.mod.editor.doc, that.mod.editor.bibDB, that.mod.editor.imageDB, that.mod.editor.currentStyle,compiled)
         })
     }
 

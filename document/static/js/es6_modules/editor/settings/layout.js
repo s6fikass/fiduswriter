@@ -22,8 +22,8 @@ export class ModSettingsLayout {
     displayDocumentstyle() {
 
         let documentStyleLink, stylesheet, that = this
-        if(!this.mod.editor.doc.settings.documentstyle){
-            this.mod.editor.doc.settings.documentstyle='Undefined'
+        if(!this.mod.editor.styleDB.db[this.mod.editor.doc.settings.documentstyle.split('_')[1]]){
+            this.mod.editor.doc.settings.documentstyle='style_1'
         }
 
         jQuery("#header-navigation .style.selected").removeClass('selected')
@@ -35,12 +35,13 @@ export class ModSettingsLayout {
         documentStyleLink.parentElement.removeChild(documentStyleLink.previousElementSibling)
         let style=this.mod.editor.styleDB.db[this.mod.editor.doc.settings.documentstyle.split('_')[1]]
         this.mod.editor.currentStyle=style
-        if(style.css && style.css!="Undefined"){
+        if(style && style.css && style.css!="Undefined"){
             stylesheet = loadCSS(
                 style.css,
                 documentStyleLink
             )
         }else{
+            if(style)
             stylesheet = loadCSS(
                 staticUrl + 'css/document/' + style.filename + '.css',
                 documentStyleLink

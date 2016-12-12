@@ -255,7 +255,7 @@ export class Editor {
         let that = this
         if (!this.styleDB) {
             let styleGetter = new StyleDB(userId)
-            styleGetter.getDB(function(pks){
+            styleGetter.getDB(true ,function(pks){
                 that.styleDB = styleGetter
                 that.schema.cached.styleDB = styleGetter // assign style DB to be used in schema.
                 that.mod.footnotes.schema.cached.styleDB = styleGetter // assign style DB to be used in footnote schema.

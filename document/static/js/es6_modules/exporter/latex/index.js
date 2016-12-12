@@ -1,115 +1,77 @@
-import {obj2Node} from "../tools/json"
-import {createSlug} from "../tools/file"
-import {findImages} from "../tools/html"
+import {createSlug, getDatabasesIfNeeded} from "../tools/file"
+import {removeHidden} from "../tools/doc-contents"
+import {LatexExporterConvert} from "./convert"
 import {zipFileCreator} from "../tools/zip"
-import {PDFFileCreator} from "../tools/pdftex"
 import {BibLatexExporter} from "../../bibliography/exporter/biblatex"
-import {BibliographyDB} from "../../bibliography/database"
-import {addAlert} from "../../common/common"
-import {BaseLatexExporter} from "./base"
+import {PDFFileCreator} from "../tools/pdftex"
+/*
+ Exporter to LaTeX
+*/
 
-
-export class LatexExporter extends BaseLatexExporter {
-    constructor(doc, bibDB, styleDB) {
-        super()
+export class LatexExporter {
+    constructor(doc, bibDB, imageDB, styleDB, compiled) {
         let that = this
         this.doc = doc
+        this.bibDB = bibDB
+        this.imageDB = imageDB
+        this.docContents = false
+        this.zipFileName = false
+        this.textFiles = []
+        this.httpFiles = []
+        this.compiled = compiled
         if(styleDB.latexcls && styleDB.latexcls != 'Undefined'){
             this.docClass=styleDB.latexcls
         }
-        if (bibDB) {
-            this.bibDB = bibDB // the bibliography has already been loaded for some other purpose. We reuse it.
-            this.exportTwo(this.docClass)
-        } else {
-            this.bibDB = new BibliographyDB(doc.owner.id, false, false, false)
-            this.bibDB.getDB(function() {
-                that.exportOne()
+        getDatabasesIfNeeded(this, doc).then(function(){
+            if(compiled){
+                that.init2()
+            }else{
+                that.init()
+            }
+        })
+    }
+
+    init() {
+        let that = this
+        this.zipFileName = `${createSlug(this.doc.title)}.latex.zip`
+        this.docContents = removeHidden(this.doc.contents)
+        this.converter = new LatexExporterConvert(this, this.imageDB, this.bibDB,this.compiled, this.docClass)
+        this.conversion = this.converter.init(this.docContents)
+        if (this.conversion.bibIds.length > 0) {
+            let bibExport = new BibLatexExporter(this.conversion.bibIds, this.bibDB.db, false)
+            this.textFiles.push({filename: 'bibliography.bib', contents: bibExport.bibtexStr})
+        }
+        this.textFiles.push({filename: 'document.tex', contents: this.conversion.latex})
+        this.conversion.imageIds.forEach(function(id){
+            that.httpFiles.push({
+                filename: that.imageDB.db[id].image.split('/').pop(),
+                url: that.imageDB.db[id].image
             })
+        })
+
+        zipFileCreator(this.textFiles, this.httpFiles, this.zipFileName)
+    }
+
+    init2() {
+        let that = this
+        this.PDFFileName =  this.doc.title
+        this.docContents = removeHidden(this.doc.contents)
+        this.converter = new LatexExporterConvert(this, this.imageDB, this.bibDB, this.compiled, '/class/'+this.docClass.split('/')[4].split('.')[0])
+        this.conversion = this.converter.init(this.docContents)
+        if (this.conversion.bibIds.length > 0) {
+            let bibExport = new BibLatexExporter(this.conversion.bibIds, this.bibDB.db, false)
+            this.textFiles.push({filename: 'bibliography.bib', contents: bibExport.bibtexStr})
         }
 
+        this.conversion.imageIds.forEach(function(id){
+            that.httpFiles.push({
+                filename: that.imageDB.db[id].image.split('/').pop(),
+                url: that.imageDB.db[id].image
+            })
+        })
 
+        PDFFileCreator(this.conversion.latex, this.textFiles, this.httpFiles, this.docClass, createSlug(this.PDFFileName))
     }
 
 
-    exportOne() {
-        let title = this.doc.title
-
-        addAlert('info', title + ': ' + gettext(
-            'Latex export has been initiated.'))
-
-        let contents = document.createElement('div')
-
-        let tempNode = obj2Node(this.doc.contents)
-
-        while (tempNode.firstChild) {
-            contents.appendChild(tempNode.firstChild)
-        }
-
-        let httpOutputList = findImages(contents)
-        if(this.styleDB.latex_cls){
-            let latexCode = this.htmlToLatex(title, this.doc.owner.name, contents,
-            this.doc.settings, this.doc.metadata, documentClass=this.styleDB.latex_cls.filename)
-
-        }else{
-            let latexCode = this.htmlToLatex(title, this.doc.owner.name, contents,
-                this.doc.settings, this.doc.metadata)
-
-        }
-
-        let outputList = [{
-            filename: 'document.tex',
-            contents: latexCode.latex
-        }]
-
-        if (latexCode.bibtex.length > 0) {
-            outputList.push({
-                filename: 'bibliography.bib',
-                contents: latexCode.bibtex
-            })
-        }
-
-        zipFileCreator(outputList, httpOutputList, createSlug(
-                title) +
-            '.latex.zip')
-    }
-
-    exportTwo(docClass) {
-        let title = this.doc.title
-
-        addAlert('info', title + ': ' + gettext(
-            'Latex export has been initiated.'))
-
-        let contents = document.createElement('div')
-
-        let tempNode = obj2Node(this.doc.contents)
-
-        while (tempNode.firstChild) {
-            contents.appendChild(tempNode.firstChild)
-        }
-
-        let ImagesList = findImages(contents)
-        let latexCode
-        if(docClass){
-            latexCode = this.htmlToLatex(title, this.doc.owner.name, contents,
-            this.doc.settings,this.doc.metadata,false,[],'/class/'+docClass.split('/')[4].split('.')[0])
-        }else{
-            latexCode = this.htmlToLatex(title, this.doc.owner.name, contents,
-            this.doc.settings, this.doc.metadata)
-        }
-
-        let outputList = [{
-            filename: 'document.tex',
-            contents: latexCode.latex
-        }]
-
-        if (latexCode.bibtex.length > 0) {
-            outputList.push({
-                filename: 'bibliography.bib',
-                contents: latexCode.bibtex
-            })
-        }
-
-        PDFFileCreator(latexCode.latex, ImagesList,docClass, createSlug(
-                title))
-    }
 }

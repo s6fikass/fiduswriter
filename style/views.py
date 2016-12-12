@@ -30,12 +30,18 @@ def stylelist_js(request):
                 if check_access_rights(user_id, request.user) is False:
                     status = 403
             if status == 200:
-                styles = DocumentStyle.objects.filter(Q(owner__in=user_ids)| Q(owner__isnull=True))
+                if request.POST['Default_List']:
+                    styles = DocumentStyle.objects.filter(Q(owner__in=user_ids)| Q(owner__isnull=True))
+                else:
+                    styles = DocumentStyle.objects.filter(owner__in=user_ids)
         else:
             if check_access_rights(user_id, request.user):
                 if int(user_id) == 0:
                     user_id = request.user.id
-                styles = DocumentStyle.objects.filter(Q(owner=user_id) | Q(owner__isnull=True))
+                if request.POST['Default_List'] == 'true':
+                    styles = DocumentStyle.objects.filter(Q(owner=user_id) | Q(owner__isnull=True))
+                else:
+                    styles = DocumentStyle.objects.filter(Q(owner=user_id))
                 status = 200
         if status == 200:
             response['styles'] = []
@@ -69,7 +75,7 @@ def stylelist_js(request):
         status=status
     )
 
-# save changes or create a new entry
+# save changes or create a new style
 @login_required
 def save_js(request):
     response = {}
@@ -118,6 +124,19 @@ def save_js(request):
         status=status
     )
 
+# delete a style
+@login_required
+def delete_js(request):
+    status = 405
+    response = {}
+    if request.is_ajax() and request.method == 'POST':
+        status = 201
+        ids = request.POST.getlist('ids[]')
+        DocumentStyle.objects.filter(pk__in=ids, owner=request.user).delete()
+    return JsonResponse(
+        response,
+        status=status
+    )
 
 def check_access_rights(other_user_id, this_user):
     other_user_id = int(other_user_id)
