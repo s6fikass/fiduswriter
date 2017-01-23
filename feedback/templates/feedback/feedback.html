@@ -1,0 +1,20 @@
+{% load i18n %}
+<a class="feedback-tab" href="#">{% trans "Feedback" %}</a>
+<div class="feedback-panel">
+  <div id="feedback-wrapper">
+    <div id="feedback-title">{% trans "Feedback" %}</div>
+    <div id="feedback-form">
+      <form method="post" action="/feedback/feedback/">
+        {% csrf_token %}
+        <textarea id="message" name="message" rows="10" cols="30"></textarea>
+        <input type="button" value='{% trans "submit" %}' id="feedbackbutton" class="btn dark" />
+      </form>
+    </div>
+    <div id="response-message">
+      {% trans "Thank you for your comment!" %}
+    </div>
+    <span id="closeFeedback" class="icon-cancel"></span>
+  </div>
+</div>
+<link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/feedback/feedback.css" />
+<script type="text/javascript" src="{{ STATIC_URL }}js/feedback.es5.js"></script>
