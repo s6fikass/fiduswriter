@@ -1,0 +1,205 @@
+/** @file A document style definition. 
+ This file is automatically created using ./manage.py create_document_styles
+*/
+
+@font-face {
+font-family: 'Cardo';
+font-style: normal;
+font-weight: 400;
+src: local('Cardo'), local('Cardo-Regular'), url(/media/document-fonts/Cardo-Regular.woff) format('woff');
+}
+
+@font-face {
+font-family: 'Cardo';
+font-style: normal;
+font-weight: 700;
+src: local('Cardo Bold'), local('Cardo-Bold'), url(/media/document-fonts/Cardo-Bold.woff) format('woff');
+}
+
+@font-face {
+font-family: 'Cardo';
+font-style: italic;
+font-weight: 400;
+src: local('Cardo Italic'), local('Cardo-Italic'), url(/media/document-fonts/Cardo-Italic.woff) format('woff');
+}
+
+@font-face {
+font-family: 'Open Sans';
+font-style: normal;
+font-weight: 400;
+src: local('Open Sans'), local('OpenSans-Regular'), url(/media/document-fonts/OpenSans-Regular.woff) format('woff');
+}
+
+@font-face {
+font-family: 'Open Sans';
+font-style: normal;
+font-weight: 700;
+src: local('Open Sans Bold'), local('OpenSans-Bold'), url(/media/document-fonts/OpenSans-Bold.woff) format('woff');
+}
+.user-contents {
+    font-family: 'Cardo', serif;
+    font-weight: 400;
+    font-size: 1.2em;
+    /*text-align: justify;*/
+    word-wrap: break-word;
+}
+
+.article-authors, .article-keywords {
+    line-height: 1.6em;
+}
+
+.article-title {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 48px;
+    font-weight: 700;
+}
+
+.article-subtitle {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 40px;
+    font-weight: 900;
+}
+
+.article-abstract {
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+.article-part.metadata {
+    margin-bottom: 20px;
+}
+
+.pagination-footnote:before,
+.pagination-footnote > * > *:first-child:before {
+    font-family: 'Cardo', serif;
+    font-weight: 700;
+    font-size: 9px;
+    text-align: left;
+    font-style: normal;
+    vertical-align: super;
+    line-height: 0;
+}
+
+.pagination-footnote > * > *:first-child:before {
+    margin-right: 5px;
+}
+
+.pagination-footnote > * > * {
+    font-family: 'Cardo', serif;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 1.35em;
+}
+
+.pagination-pagenumber {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    text-align: center !important;
+    line-height: 30px;
+    right: auto !important;
+    left: 50% !important;
+    width: 60px;
+    height: 30px;
+    background-color: #f3f3f3;
+    -webkit-border-radius: 15px;
+    border-radius: 15px;
+    vertical-align: middle;
+    margin-left: -25px;
+}
+
+.pagination-footnotes {
+    margin-top: 25px;
+}
+
+.user-contents h1,
+.user-contents h2,
+.user-contents h3,
+.user-contents p,
+.user-contents blockquote,
+.user-contents code,
+.user-contents ol,
+.user-contents ul {
+    margin-bottom: 35px;
+}
+
+.user-contents h1,
+.user-contents h2,
+.user-contents h3 {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 400;
+    line-height: 1.35em;
+    text-align: left;
+}
+
+.user-contents h1  {
+    font-size: 21px;
+}
+
+.user-contents h2 {
+    font-size: 19px;
+}
+
+.user-contents h3 {
+    font-size: 17px;
+}
+
+.user-contents p,
+.user-contents ol li,
+.user-contents ul li {
+    font-size: 18px;
+    line-height: 1.5em;
+}
+
+.user-contents strong {
+    font-weight: 700;
+}
+
+.user-contents em {
+    font-style: italic;
+}
+
+.user-contents ul,
+.user-contents ol {
+    padding-left: 15px;
+}
+.user-contents ul {
+    list-style: disc;
+}
+
+.user-contents ol {
+    list-style: decimal;
+}
+
+.user-contents blockquote {
+    font-style: italic;
+    margin-left: 50px;
+    font-size: 18px;
+    line-height: 1.5em;
+}
+
+.user-contents code {
+    display: block;
+    font-family: "Courier New", Courier, mono-space;
+    font-size: 13px;
+    line-height: 1.75em;
+}
+
+.article-bibliography p {
+    font-size: 14px;
+    margin-bottom: 18px;
+}
+
+.article-bibliography-header::before {
+    content: 'Bibliography';
+}
+
+.equation {
+    font-size: 80%;
+}
+
+.pagination-contents-container {
+    bottom: 120px;
+    top: 80px;
+    height: auto;
+}
